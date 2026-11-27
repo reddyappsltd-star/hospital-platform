@@ -205,3 +205,39 @@ resource "aws_iam_role_policy" "analyst" {
     ]
   })
 }
+# Tell AWS that GitHub is a trusted identity provider
+resource "aws_iam_openid_connect_provider" "github" {
+  url            = "https://token.actions.githubusercontent.com"
+  client_id_list = ["sts.amazonaws.com"]
+}
+
+# The role the pipeline wears. Only this one repository may use it.
+resource "aws_iam_role" "pipeline" {
+  name = "hospital-pipeline"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect    = "Allow"
+      Action    = "sts:AssumeRoleWithWebIdentity"
+      Principal = { Federated = aws_iam_openid_connect_provider.github.arn }
+      Condition = {
+        StringEquals = {
+          "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
+        }
+        StringLike = {
+          "token.actions.githubusercontent.com:sub" = [
+            "repo:reddyappsltd-star/hospital-platform:ref:refs/heads/main",
+            "repo:reddyappsltd-star/hospital-platform:pull_request"
+          ]
+        }
+      }
+    }]
+  })
+}
+
+# What the pipeline may do once it has the role
+resource "aws_iam_role_policy_attachment" "pipeline_admin" {
+  role       = aws_iam_role.pipeline.name
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+}
