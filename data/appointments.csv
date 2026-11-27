@@ -1,0 +1,11 @@
+appointment_id,appointment_date,department,clinic_site,wait_days,attended
+1001,2026-10-05,Cardiology,Main Hospital,21,yes
+1002,2026-10-05,Dermatology,North Clinic,35,yes
+1003,2026-10-06,Cardiology,Main Hospital,18,no
+1004,2026-10-06,Orthopaedics,Main Hospital,42,yes
+1005,2026-10-07,Dermatology,North Clinic,30,yes
+1006,2026-10-07,Orthopaedics,South Clinic,55,no
+1007,2026-10-08,Cardiology,South Clinic,14,yes
+1008,2026-10-08,Dermatology,Main Hospital,28,yes
+1009,2026-10-09,Orthopaedics,Main Hospital,47,yes
+1010,2026-10-09,Cardiology,North Clinic,25,no
