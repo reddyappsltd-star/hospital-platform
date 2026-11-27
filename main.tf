@@ -205,10 +205,9 @@ resource "aws_iam_role_policy" "analyst" {
     ]
   })
 }
-# Tell AWS that GitHub is a trusted identity provider
-resource "aws_iam_openid_connect_provider" "github" {
-  url            = "https://token.actions.githubusercontent.com"
-  client_id_list = ["sts.amazonaws.com"]
+# Look up the GitHub trust provider that already exists in this account
+data "aws_iam_openid_connect_provider" "github" {
+  url = "https://token.actions.githubusercontent.com"
 }
 
 # The role the pipeline wears. Only this one repository may use it.
@@ -220,7 +219,7 @@ resource "aws_iam_role" "pipeline" {
     Statement = [{
       Effect    = "Allow"
       Action    = "sts:AssumeRoleWithWebIdentity"
-      Principal = { Federated = aws_iam_openid_connect_provider.github.arn }
+           Principal = { Federated = data.aws_iam_openid_connect_provider.github.arn }
       Condition = {
         StringEquals = {
           "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
