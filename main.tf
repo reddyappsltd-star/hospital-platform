@@ -1,5 +1,5 @@
 terraform {
-      backend "s3" {
+  backend "s3" {
     bucket       = "hospital-tfstate-566188427204"
     key          = "hospital-platform/terraform.tfstate"
     region       = "eu-west-2"
